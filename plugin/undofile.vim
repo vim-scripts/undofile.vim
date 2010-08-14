@@ -4,7 +4,7 @@
 " Last Change:  2010 Aug 14
 " Rev Days:     0
 " Vim Version:	7.3f BETA
-" Version:	0.1
+" Version:	0.2
 " Author:	Andy Wokula <anwoku@yahoo.de>
 " License:	Vim License, see :h license
 
@@ -64,9 +64,23 @@
 " + do not silently overwrite a foreign plugin/undofile_autocmds.vim file
 "   ! don't overwrite when it looks odd
 
-if !has("persistent_undo")
+" Prologue: {{{
+if exists("loaded_undofile")
     finish
 endif
+let loaded_undofile = 1
+
+if v:version < 703
+    echomsg "undofile: you need at least Vim 7.3"
+    finish
+elseif !has("persistent_undo")
+    echomsg "undofile: persistent_undo feature required"
+    finish
+endif
+
+let s:cpo_save = &cpo
+set cpo&vim
+" }}}
 
 com! -bar -bang  SetUndoFile	call s:SetUndoFile(<bang>0)
 com! -bar	 UnsetUndoFile	call s:UnsetUndoFile()
@@ -222,11 +236,17 @@ func! s:DelUndoFile() "{{{
 endfunc "}}}
 
 
-" Init:
+" Init: {{{
 let s:augroup = "UndoFile"
 
 " if the plugin file was not successfully read first, give a message when
 " writing it; also don't try to uninstall from a bad plugin file:
 let s:plugin_read_ok = 0
+
+" }}}
+
+" Epilogue: {{{1
+let &cpo = s:cpo_save
+unlet s:cpo_save
 
 " vim:set fdm=marker ts=8:
