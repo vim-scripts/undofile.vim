@@ -1,0 +1,27 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=3198
+
+If you want 'undofile' only for certain files, you will notice that 'undofile' cannot be set in a modeline, or once the buffer is loaded (because an existing undo file will not be loaded then).  Bram suggests to use a BufReadPre autocmd which sets 'undofile' before the buffer is loaded.  This script does the steps for you.
+
+Usage:
+
+:SetUndoFile[!]
+
+  execute :setlocal undofile, install a BufReadPre autocmd for the current file name and also maintain a plugin file "plugin/undofile_autocmds.vim" that enables all such autocmds at next startup of Vim.
+
+  This means you can execute this command once for the current file and then never ever again -- FIRE AND FORGET ;)
+
+  The plugin file (if not found in the runtimepath) is stored in the first directory of the runtimepath (which must contain a "plugin" folder).  Older Vims will ignore the plugin.
+
+  With [!], ignore if 'undofile' is already set.
+
+
+:UnsetUndoFile
+
+  opposite of :SetUndoFile.  Does :setlocal noundofile, removes the autcommand and the autcommand entry from "plugin/undofile_autocmds.vim"; finally it executes :DelUndoFile.
+
+
+:DelUndoFile
+
+  delete the undofile for the current buffer.  Fails silently.
+
+PLEASE REPORT BUGS
